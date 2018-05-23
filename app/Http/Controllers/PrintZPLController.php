@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Fixture;
 
 //*********************************
 // IMPORTANT NOTE 
@@ -38,35 +39,42 @@ class PrintZPLController extends Controller
 
         if ($request->exists(WebClientPrint::CLIENT_PRINT_JOB)) {
 
+
             $useDefaultPrinter = ($request->input('useDefaultPrinter') === 'checked');
             $printerName = urldecode($request->input('printerName'));
 
-            $sensor = $request->input('sensor');
-            $radio = $request->input('radio');
-            $controller = $request->input('controller');
+            $sm = $request->input('sm');
+            $rm = $request->input('rm');
+            $fm = $request->input('fm');
             $qty_labels = $request->input('labels');
+
+            $fixture = new Fixture;
+            $fixture->sm = $sm;
+            $fixture->rm = $rm;
+            $fixture->fm = $fm;
+            $fixture->save();
              
             //Create ZPL commands for sample label
             $cmds = "^XA";
             $cmds .= "^FO20,30^GB500,320,4^FS";
-            $cmds .= "^FO200,40";
-            $cmds .= "^BQN,2,4";
-            $cmds .= "^FDMM,A" . $sensor . ' ' . $radio . ' ' . $controller . "^FS";
+            $cmds .= "^FO200,60";
+            $cmds .= "^BXN,7,200";
+            $cmds .= "^FD" . $sm . ' ' . $rm . ' ' . $fm . "^FS";
             $cmds .= "^FO20,30^GB500,180,4^FS";
             $cmds .= "^FO20,206^GB160,144,4^FS";
-            $cmds .= "^FO80,250";
-            $cmds .= "^BXN,3,200";
-            $cmds .= "^FD" . $sensor . "^FS";
+            $cmds .= "^FO70,240";
+            $cmds .= "^BXN,4,200";
+            $cmds .= "^FD" . $sm . "^FS";
             $cmds .= "^FO60,300^AC^FDSENSOR^FS";
             $cmds .= "^FO175,206^GB150,144,4^FS";
-            $cmds .= "^FO230,250";
-            $cmds .= "^BXN,3,200";
-            $cmds .= "^FD" . $radio . "^FS";
+            $cmds .= "^FO220,240";
+            $cmds .= "^BXN,4,200";
+            $cmds .= "^FD" . $rm . "^FS";
             $cmds .= "^FO220,300^AC^FDRADIO^FS";
-            $cmds .= "^FO400,250";
-            $cmds .= "^BXN,3,200";
-            $cmds .= "^FD" . $controller . "^FS";
-            $cmds .= "^FO320,300^AC^FD FIX. CONTROLLER^FS";
+            $cmds .= "^FO390,240";
+            $cmds .= "^BXN,4,200";
+            $cmds .= "^FD" . $fm . "^FS";
+            $cmds .= "^FO320,300^AC^FD   FIX. MODULE^FS";
             $cmds .= "^XZ";
  
             //Create a ClientPrintJob obj that will be processed at the client side by the WCPP
@@ -75,7 +83,7 @@ class PrintZPLController extends Controller
             $cpj->printerCommands = $cmds;
             $cpj->formatHexValues = true;
             $cpj->printerCommandsCopies = $qty_labels;
- 
+
             if ($useDefaultPrinter || $printerName === 'null') {
                 $cpj->clientPrinter = new DefaultPrinter();
             } else {

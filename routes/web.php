@@ -22,3 +22,10 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('print', 'PrintZPLController@index');
 Route::get('PrintZPLController', 'PrintZPLController@printCommands');
 Route::any('WebClientPrintController', 'WebClientPrintController@processRequest');
+
+Route::post('validate-sm/{code}', 'FixtureController@validateSM');
+Route::post('validate-fm/{code}', 'FixtureController@validateFM');
+Route::post('validate-rm/{code}', 'FixtureController@validateRM');
+
+
+
