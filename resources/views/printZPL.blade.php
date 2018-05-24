@@ -2,7 +2,7 @@
  
 @section('body')
  
-<h1>NX Scanner test</h1>
+<h1>NX Scanner</h1>
 <label class="checkbox">
     <input type="checkbox" id="useDefaultPrinter" /> <strong>Use default printer</strong> or...
 </label>
@@ -24,12 +24,13 @@
     <div class="row">
         <div class="col-md-4 offset-md-4">
             <div class="card">
-                <div class="card-header">
-                    <strong>Print Label</strong>    
+                <div class="card-header bg-secondary">
+                    <strong style="font-size:20px;color:white">Print Label</strong>    
+                    <img src="{{ asset('assets/hubbell.png')}}" width="140px" class="float-right">
                 </div>
                 <div class="card-body">
                         <div class="form-group">
-                            <label>Number of labels to print</label>
+                            <label>Quantity of labels to print</label>
                             <select class="form-control" name="labels" id="labels">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
